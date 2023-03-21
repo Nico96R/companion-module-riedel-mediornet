@@ -32,6 +32,7 @@ export interface CurrentSelected {
   target: number
   source: number
   matrix: number
+  actionMatrix: number
 }
 
 export interface InputState {
@@ -69,6 +70,7 @@ export class MediornetState {
       source: -1,
       target: -1,
       matrix: -1,
+      actionMatrix: 0,
     }
     this.inputs = []
     this.outputs = []
@@ -213,8 +215,8 @@ export class MediornetState {
                     )}`
                     variableValues[`${inOutLabel}_${matrix.label}_${inOutList[castupdate.number].id + 1}`] =
                       inOutList[castupdate.number].name
-                    this.self.setVariableValues(variableValues)
                     this.self.updateCompanionBits()
+                    this.self.setVariableValues(variableValues)
                   })
                 }
                 const castLabelNode = newlableNode as NumberedTreeNodeImpl<ParameterImpl>
@@ -232,8 +234,8 @@ export class MediornetState {
           i++
         }
 
-        this.self.setVariableValues(variableValues)
         this.self.updateCompanionBits()
+        this.self.setVariableValues(variableValues)
       } else {
         inOutList.forEach((value) => {
           value.active = false

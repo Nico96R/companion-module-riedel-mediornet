@@ -14,6 +14,7 @@ import { updateSelectedTargetVariables } from './variables'
 export enum ActionId {
   Take = 'take',
   Clear = 'clear',
+  SetSourceTest = 'select_source_test',
   SetSourceVideo = 'select_source_video',
   SetTargetVideo = 'select_target_video',
   SetSourceAudio = 'select_source_audio',
@@ -245,6 +246,40 @@ export function GetActionsList(
       name: 'Clear',
       options: [],
       callback: doClear(self, state),
+    },
+    [ActionId.SetSourceTest]: {
+      name: 'Select Test Source',
+      options: [
+        {
+          type: 'dropdown',
+          label: 'Matrix',
+          id: 'matrix',
+          default: 0,
+          minChoicesForSearch: 10,
+          choices: [
+            { id: 0, label: 'video' },
+            { id: 1, label: 'audio' },
+            { id: 2, label: 'data' },
+          ],
+        },
+        {
+          type: 'dropdown',
+          label: 'Value',
+          id: 'source',
+          default: 0,
+          minChoicesForSearch: 10,
+          choices: inputChoices[state.selected.actionMatrix],
+        },
+      ],
+      callback: setSelectedSource(self, emberClient, config, state, matrixnames.video),
+      subscribe: (action) => {
+        state.selected.actionMatrix = Number(action.options['matrix'])
+        self.setActionDefinitions(GetActionsList(self, emberClient, config, state))
+      },
+      unsubscribe: () => {
+        state.selected.actionMatrix = 100
+        self.setActionDefinitions(GetActionsList(self, emberClient, config, state))
+      },
     },
     [ActionId.SetSourceVideo]: {
       name: 'Select Video Source',
